@@ -1,5 +1,5 @@
-use serde::Deserialize;
-use std::{future::Future, pin::Pin};
+use serde::{de::Visitor, Deserialize};
+use std::{fmt, future::Future, pin::Pin};
 use url::Url;
 
 pub type DynErr = Box<dyn std::error::Error + Send + Sync>;
@@ -48,4 +48,38 @@ pub struct DiscoveryDoc {
 /// Parse URL-safe base64.
 pub fn base64url_decode<T: ?Sized + AsRef<[u8]>>(data: &T) -> Result<Vec<u8>, base64::DecodeError> {
     base64::decode_config(data, base64::URL_SAFE_NO_PAD)
+}
+
+/// Function used to deserialize Unix timestamps in a JWT.
+///
+/// Some JWT implementations produce floating points for `iat` / `exp` values.
+pub fn deserialize_timestamp<'de, D>(deserializer: D) -> Result<u64, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    // This visitor specifically implements only the methods expected to be called by
+    // serde_json. We can ignore i64 / negative values, and treat them as invalid.
+    struct TimestampVisitor;
+    impl<'de> Visitor<'de> for TimestampVisitor {
+        type Value = u64;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("a positive number")
+        }
+
+        fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+        where
+            E: serde::de::Error,
+        {
+            Ok(v)
+        }
+
+        fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+        where
+            E: serde::de::Error,
+        {
+            Ok(v as u64)
+        }
+    }
+    deserializer.deserialize_any(TimestampVisitor)
 }

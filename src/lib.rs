@@ -309,7 +309,9 @@ impl Client {
             aud: String,
             email: String,
             email_original: Option<String>,
+            #[serde(deserialize_with = "misc::deserialize_timestamp")]
             iat: u64,
+            #[serde(deserialize_with = "misc::deserialize_timestamp")]
             exp: u64,
             nonce: String,
         }
