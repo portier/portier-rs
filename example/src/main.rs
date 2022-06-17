@@ -6,7 +6,7 @@ use rocket::{
     get,
     http::{uri::Absolute, Status},
     launch, post,
-    response::{content::Html, Redirect},
+    response::{content::RawHtml, Redirect},
     routes, FromForm, State,
 };
 
@@ -24,8 +24,8 @@ struct VerifyForm {
 
 /// Render a simple index page with a login form.
 #[get("/")]
-fn index() -> Html<&'static str> {
-    Html(
+fn index() -> RawHtml<&'static str> {
+    RawHtml(
         r#"
         <p>Enter your email address:</p>
         <form method="post" action="/auth">
@@ -62,13 +62,13 @@ async fn auth(form: Form<AuthForm>, client: &State<portier::Client>) -> Result<R
 async fn verify(
     form: Form<VerifyForm>,
     client: &State<portier::Client>,
-) -> Result<Html<String>, Status> {
+) -> Result<RawHtml<String>, Status> {
     let email = client.verify(&form.id_token).await.map_err(|err| {
         error!("Portier verify error: {}", err);
         Status::InternalServerError
     })?;
 
-    Ok(Html(format!("<p>Verified email address {}!</p>", email)))
+    Ok(RawHtml(format!("<p>Verified email address {}!</p>", email)))
 }
 
 /// Rocket entry-point.
