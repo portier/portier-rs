@@ -1,6 +1,6 @@
 use serde::{de::Error, Deserialize};
 
-use crate::misc::base64url_decode;
+use crate::misc::base64url;
 
 /// Document containing a set of JWKs.
 ///
@@ -44,7 +44,7 @@ impl<'de> Deserialize<'de> for Binary {
         D: serde::Deserializer<'de>,
     {
         let data: &str = Deserialize::deserialize(de)?;
-        base64url_decode(data).map(Self).map_err(Error::custom)
+        base64url::decode(data).map(Self).map_err(Error::custom)
     }
 }
 

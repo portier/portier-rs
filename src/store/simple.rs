@@ -16,7 +16,7 @@ use thiserror::Error;
 use tokio::sync::Mutex as TokioMutex;
 use url::Url;
 
-use crate::misc::{DynErr, DynFut, DynFutRes};
+use crate::misc::{base64url, DynErr, DynFut, DynFutRes};
 use crate::{FetchError, Store};
 
 type Request = hyper::Request<Body>;
@@ -231,7 +231,7 @@ pub async fn generate_nonce(rng: impl SecureRandom + Send + Sync + 'static) -> S
         let mut data = vec![0; 16];
         rng.fill(&mut data[..])
             .expect("secure random number generator failed");
-        base64::encode_config(data, base64::URL_SAFE_NO_PAD)
+        base64url::encode(&data)
     })
     .await
     .expect("rng task panicked")

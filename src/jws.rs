@@ -2,7 +2,7 @@ use ring::signature;
 use serde::Deserialize;
 use thiserror::Error;
 
-use crate::{jwk, misc::base64url_decode};
+use crate::{jwk, misc::base64url};
 
 #[derive(Debug, Error)]
 pub enum VerifyError {
@@ -42,11 +42,11 @@ pub fn verify<'a>(
     let message = input[..message_len].as_bytes();
 
     // Decode all parts.
-    let header = base64url_decode(header)
+    let header = base64url::decode(header)
         .map_err(|reason| VerifyError::InvalidPartBase64 { index: 1, reason })?;
-    let payload = base64url_decode(payload)
+    let payload = base64url::decode(payload)
         .map_err(|reason| VerifyError::InvalidPartBase64 { index: 2, reason })?;
-    let signature = base64url_decode(signature)
+    let signature = base64url::decode(signature)
         .map_err(|reason| VerifyError::InvalidPartBase64 { index: 3, reason })?;
 
     // Parse the header and find the key ID.
