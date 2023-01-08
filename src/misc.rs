@@ -45,11 +45,6 @@ pub struct DiscoveryDoc {
     pub authorization_endpoint: Url,
 }
 
-/// Parse URL-safe base64.
-pub fn base64url_decode<T: ?Sized + AsRef<[u8]>>(data: &T) -> Result<Vec<u8>, base64::DecodeError> {
-    base64::decode_config(data, base64::URL_SAFE_NO_PAD)
-}
-
 /// Function used to deserialize Unix timestamps in a JWT.
 ///
 /// Some JWT implementations produce floating points for `iat` / `exp` values.
@@ -82,4 +77,23 @@ where
         }
     }
     deserializer.deserialize_any(TimestampVisitor)
+}
+
+pub mod base64url {
+    use base64::{
+        alphabet,
+        engine::fast_portable::{self, FastPortable},
+    };
+
+    pub const ENGINE: FastPortable = FastPortable::from(&alphabet::URL_SAFE, fast_portable::NO_PAD);
+
+    #[inline]
+    pub fn encode<T: ?Sized + AsRef<[u8]>>(data: &T) -> String {
+        base64::encode_engine(data, &ENGINE)
+    }
+
+    #[inline]
+    pub fn decode<T: ?Sized + AsRef<[u8]>>(data: &T) -> Result<Vec<u8>, base64::DecodeError> {
+        base64::decode_engine(data, &ENGINE)
+    }
 }
