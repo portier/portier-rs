@@ -19,7 +19,7 @@ default = ["simple-store"]
 simple-store = ["tokio", "hyper", "hyper-tls"]
 
 [dependencies]
-base64 = "0.20.0"
+base64 = "0.21.0"
 bytes = "1.0.1"
 hyper = { version = "0.14.9", optional = true, features = ["http1", "http2", "client"] }
 hyper-tls = { version = "0.5.0", optional = true }
