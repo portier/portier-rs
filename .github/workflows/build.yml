@@ -54,7 +54,7 @@ jobs:
 
     - name: Check - toolchain compat
       env:
-        toolchain_version: 1.60.0
+        toolchain_version: 1.63.0
       run: |
         rustup update --no-self-update $toolchain_version
         cargo +$toolchain_version check --locked
