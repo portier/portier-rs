@@ -1,8 +1,0 @@
-[package]
-name = "portier-tester"
-version = "0.0.0"
-edition = "2018"
-
-[dependencies]
-portier = { path = "../" }
-tokio = { version = "1.8.4", features = ["io-util", "io-std", "macros", "rt"] }

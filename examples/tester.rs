@@ -1,3 +1,6 @@
+//! This executable is used to for integration testing the library using:
+//! https://github.com/portier/client-tester
+
 use portier::Client;
 use tokio::io::{self, AsyncBufReadExt};
 

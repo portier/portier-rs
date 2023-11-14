@@ -8,12 +8,6 @@ repository = "https://github.com/portier/portier-rs"
 license = "MIT"
 rust-version = "1.60.0"
 
-[workspace]
-members = [
-  "example",
-  "tester"
-]
-
 [features]
 default = ["simple-store"]
 simple-store = ["tokio", "hyper", "hyper-tls"]
@@ -23,9 +17,14 @@ base64 = "0.21.0"
 bytes = "1.0.1"
 hyper = { version = "0.14.9", optional = true, features = ["http1", "http2", "client"] }
 hyper-tls = { version = "0.5.0", optional = true }
-ring = "0.16.15"
+ring = "0.17.5"
 serde = { version = "1.0.126", features = ["derive"] }
 serde_json = "1.0.64"
 thiserror = "1.0.25"
 tokio = { version = "1.8.4", optional = true, features = ["rt", "sync"] }
 url = { version = "2.2.2", features = ["serde"] }
+
+[dev-dependencies]
+log = "0.4.14"
+rocket = "= 0.5.0-rc.4"
+tokio = { version = "1.8.4", features = ["io-util", "io-std", "macros", "rt"] }
