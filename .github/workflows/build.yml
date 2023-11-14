@@ -61,7 +61,10 @@ jobs:
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
     - name: Build
-      run: cargo build --locked --workspace
+      run: cargo build --locked
+
+    - name: Build examples
+      run: cargo build --locked --examples
 
     - name: Clippy
       uses: actions-rs/clippy-check@v1
@@ -72,7 +75,7 @@ jobs:
       run: go install github.com/portier/client-tester@latest
 
     - name: Run test suite
-      run: ~/go/bin/client-tester -bin ./target/debug/portier-tester
+      run: ~/go/bin/client-tester -bin ./target/debug/examples/tester
 
     - name: Check - no features
       run: cargo build --locked --no-default-features
