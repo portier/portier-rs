@@ -25,7 +25,11 @@ async fn main() {
         match cmd[0] {
             "echo" => println!("ok\t{}", cmd[1]),
             "auth" => match client.start_auth(&cmd[1]).await {
-                Ok(url) => println!("ok\t{}", url),
+                Ok(mut url) => {
+                    url.query_pairs_mut()
+                        .append_pair("state", cmd.get(2).cloned().unwrap_or_default());
+                    println!("ok\t{}", url);
+                }
                 Err(err) => println!("err\t{}", err),
             },
             "verify" => match client.verify(&cmd[1]).await {

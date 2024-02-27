@@ -255,6 +255,9 @@ impl Client {
     /// If performing the redirect in the HTTP response, the recommended method is to send a 303
     /// HTTP status code with the `Location` header set to the URL. But other solutions are
     /// possible, such as fetching this URL using a request from client-side JavaScript.
+    ///
+    /// The caller may add a `state` query parameter to the returned URL, which is passed verbatim
+    /// to the redirect URI after the user returns.
     pub async fn start_auth(&self, email: &str) -> Result<Url, StartAuthError> {
         let discovery = self
             .store
