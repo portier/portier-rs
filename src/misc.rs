@@ -11,7 +11,7 @@ pub type DynFutRes<T> = DynFut<DynRes<T>>;
 ///
 /// The response mode specifies how the server instructs the user agent to return a response to the
 /// `redirect_uri` of the client.
-#[derive(Clone, Copy, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Copy, Default, Deserialize, PartialEq, Eq)]
 pub enum ResponseMode {
     /// Send the response data in the URL fragment.
     ///
@@ -19,6 +19,7 @@ pub enum ResponseMode {
     /// not sent to the server.
     Fragment,
     /// Send the response data in a POST request with an `application/x-www-form-urlencoded` body.
+    #[default]
     FormPost,
 }
 
@@ -29,12 +30,6 @@ impl ResponseMode {
             ResponseMode::Fragment => "fragment",
             ResponseMode::FormPost => "form_post",
         }
-    }
-}
-
-impl Default for ResponseMode {
-    fn default() -> Self {
-        ResponseMode::FormPost
     }
 }
 
@@ -55,7 +50,7 @@ where
     // This visitor specifically implements only the methods expected to be called by
     // serde_json. We can ignore i64 / negative values, and treat them as invalid.
     struct TimestampVisitor;
-    impl<'de> Visitor<'de> for TimestampVisitor {
+    impl Visitor<'_> for TimestampVisitor {
         type Value = u64;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {

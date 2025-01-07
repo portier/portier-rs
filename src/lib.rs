@@ -336,7 +336,7 @@ impl Client {
         let exp_stretched = payload
             .exp
             .checked_add(self.leeway.as_secs())
-            .unwrap_or(u64::min_value());
+            .unwrap_or(u64::MIN);
         if exp_stretched < now {
             return Err(VerifyError::TokenExpired);
         }
@@ -344,7 +344,7 @@ impl Client {
         let iat_stretched = payload
             .iat
             .checked_sub(self.leeway.as_secs())
-            .unwrap_or(u64::max_value());
+            .unwrap_or(u64::MAX);
         if now < iat_stretched {
             return Err(VerifyError::IssuedInTheFuture);
         }
